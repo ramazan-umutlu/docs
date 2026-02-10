@@ -7,7 +7,7 @@
     "light": "#3385FF",
     "dark": "#0052CC"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.png",
   "navigation": {
     "tabs": [
       {
@@ -34,32 +34,32 @@
       "anchors": [
         {
           "anchor": "Dashboard",
-          "href": "https://semust.com/dashboard",
+          "href": "https://app.semust.com/api",
           "icon": "gauge"
         },
         {
           "anchor": "API Access",
-          "href": "https://semust.com/api/access",
+          "href": "https://app.semust.com/api/access",
           "icon": "key"
         }
       ]
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo/semust-logo-png.png",
+    "dark": "/logo/semust-logo-png.png"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:support@semust.com"
+        "href": "mailto:destek@semust.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get API Access",
-      "href": "https://semust.com/api/access"
+      "href": "https://app.semust.com/api/access"
     }
   },
   "footer": {
