@@ -1,0 +1,357 @@
+---
+title: "Keyword Data API"
+description: "Get keyword metrics, search volume, and related keywords"
+icon: "chart-line"
+---
+
+## Endpoint
+
+```
+POST https://data.semust.com/v1/keyword-data
+```
+
+## Authentication
+
+All requests require authentication headers. See [Authentication](/authentication) for details.
+
+| Header | Type | Description |
+|--------|------|-------------|
+| `SEMUST-API-USER` | string | Your API username |
+| `SEMUST-API-PASSWORD` | string | Your API password |
+
+## Request Parameters
+
+Send parameters as JSON in the request body with `Content-Type: application/json`.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `keyword` | string | Yes | — | The keyword to analyze |
+| `country` | string | No | `"US"` | Country code (e.g., "US", "GB", "DE") |
+| `language` | string | No | `"en"` | Language code (e.g., "en", "es", "fr") |
+| `limit` | integer | No | `100` | Maximum number of results to return |
+
+## Code Examples
+
+<CodeGroup>
+
+```bash cURL
+curl -X POST https://data.semust.com/v1/keyword-data \
+  -H "Content-Type: application/json" \
+  -H "SEMUST-API-USER: your_username" \
+  -H "SEMUST-API-PASSWORD: your_password" \
+  -d '{
+    "keyword": "seo tools",
+    "country": "US",
+    "language": "en",
+    "limit": 100
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://data.semust.com/v1/keyword-data",
+    headers={
+        "SEMUST-API-USER": "your_username",
+        "SEMUST-API-PASSWORD": "your_password",
+    },
+    json={
+        "keyword": "seo tools",
+        "country": "US",
+        "language": "en",
+        "limit": 100,
+    },
+)
+
+if response.status_code == 200:
+    data = response.json()
+    print(f"Success: {data['success']}")
+    print(f"Result Count: {data['result_count']}")
+    print(f"Cost: ${data['cost']:.6f}\n")
+
+    for kw in data.get('data', []):
+        print(f"Keyword: {kw['keyword']}")
+        print(f"  Search Volume: {kw['search_volume']:,}")
+        print(f"  CPC: ${kw['cpc']:.2f}")
+        print(f"  Competition: {kw['competition']} ({kw['competition_level']})")
+        print(f"  Intent: {kw['intent']}")
+        if kw.get('related_keywords'):
+            print(f"  Related: {', '.join(kw['related_keywords'][:3])}")
+else:
+    print(f"Error [{response.status_code}]: {response.text}")
+```
+
+```javascript Node.js
+const response = await fetch("https://data.semust.com/v1/keyword-data", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "SEMUST-API-USER": "your_username",
+    "SEMUST-API-PASSWORD": "your_password",
+  },
+  body: JSON.stringify({
+    keyword: "seo tools",
+    country: "US",
+    language: "en",
+    limit: 100,
+  }),
+});
+
+if (response.ok) {
+  const data = await response.json();
+  console.log(`Success: ${data.success}`);
+  console.log(`Cost: $${data.cost.toFixed(6)}`);
+
+  data.data?.forEach((kw) => {
+    console.log(`\n${kw.keyword}`);
+    console.log(`  Search Volume: ${kw.search_volume.toLocaleString()}`);
+    console.log(`  CPC: $${kw.cpc.toFixed(2)}`);
+    console.log(`  Competition: ${kw.competition} (${kw.competition_level})`);
+    console.log(`  Intent: ${kw.intent}`);
+    if (kw.related_keywords?.length) {
+      console.log(`  Related: ${kw.related_keywords.slice(0, 3).join(", ")}`);
+    }
+  });
+} else {
+  const text = await response.text();
+  console.error(`Error [${response.status}]: ${text}`);
+}
+```
+
+```go Go
+package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "fmt"
+    "io"
+    "net/http"
+)
+
+func main() {
+    payload := map[string]interface{}{
+        "keyword":  "seo tools",
+        "country":  "US",
+        "language": "en",
+        "limit":    100,
+    }
+    body, _ := json.Marshal(payload)
+
+    req, _ := http.NewRequest("POST",
+        "https://data.semust.com/v1/keyword-data",
+        bytes.NewBuffer(body))
+    req.Header.Set("Content-Type", "application/json")
+    req.Header.Set("SEMUST-API-USER", "your_username")
+    req.Header.Set("SEMUST-API-PASSWORD", "your_password")
+
+    resp, err := (&http.Client{}).Do(req)
+    if err != nil {
+        fmt.Printf("Request failed: %v\n", err)
+        return
+    }
+    defer resp.Body.Close()
+    respBody, _ := io.ReadAll(resp.Body)
+
+    if resp.StatusCode == 200 {
+        var data map[string]interface{}
+        json.Unmarshal(respBody, &data)
+        fmt.Printf("Success: %v\n", data["success"])
+        fmt.Printf("Cost: $%.6f\n", data["cost"])
+
+        if keywordData, ok := data["data"].([]interface{}); ok {
+            for _, item := range keywordData {
+                kw := item.(map[string]interface{})
+                fmt.Printf("\n%v\n", kw["keyword"])
+                fmt.Printf("  Search Volume: %.0f\n", kw["search_volume"])
+                fmt.Printf("  CPC: $%.2f\n", kw["cpc"])
+                fmt.Printf("  Competition: %.0f (%v)\n", kw["competition"], kw["competition_level"])
+                fmt.Printf("  Intent: %v\n", kw["intent"])
+            }
+        }
+    } else {
+        fmt.Printf("Error %d: %s\n", resp.StatusCode, string(respBody))
+    }
+}
+```
+
+```php PHP
+<?php
+
+$payload = json_encode([
+    "keyword"  => "seo tools",
+    "country"  => "US",
+    "language" => "en",
+    "limit"    => 100,
+]);
+
+$ch = curl_init("https://data.semust.com/v1/keyword-data");
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Content-Type: application/json",
+    "SEMUST-API-USER: your_username",
+    "SEMUST-API-PASSWORD: your_password",
+]);
+
+$response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+if ($httpCode === 200) {
+    $data = json_decode($response, true);
+    echo "Success: " . ($data["success"] ? "true" : "false") . "\n";
+    echo "Cost: $" . number_format($data["cost"], 6) . "\n\n";
+
+    foreach ($data["data"] ?? [] as $kw) {
+        echo $kw["keyword"] . "\n";
+        echo "  Search Volume: " . number_format($kw["search_volume"]) . "\n";
+        echo "  CPC: $" . number_format($kw["cpc"], 2) . "\n";
+        echo "  Competition: " . $kw["competition"] . " (" . $kw["competition_level"] . ")\n";
+        echo "  Intent: " . $kw["intent"] . "\n\n";
+    }
+} else {
+    echo "Error [{$httpCode}]: {$response}\n";
+}
+```
+
+</CodeGroup>
+
+## Example Response
+
+```json
+{
+  "success": true,
+  "result_count": 3,
+  "cost": 0.01,
+  "data": [
+    {
+      "keyword": "seo tools",
+      "search_volume": 12100,
+      "cpc": 15.75,
+      "competition": 85,
+      "competition_level": "high",
+      "country": "us",
+      "language": "en",
+      "intent": "commercial",
+      "related_keywords": ["best seo tools", "free seo tools"]
+    },
+    {
+      "keyword": "best seo tools",
+      "search_volume": 8100,
+      "cpc": 12.50,
+      "competition": 72,
+      "competition_level": "high",
+      "country": "us",
+      "language": "en",
+      "intent": "commercial",
+      "related_keywords": null
+    },
+    {
+      "keyword": "free seo tools",
+      "search_volume": 5400,
+      "cpc": 8.25,
+      "competition": 45,
+      "competition_level": "medium",
+      "country": "us",
+      "language": "en",
+      "intent": "informational",
+      "related_keywords": null
+    }
+  ]
+}
+```
+
+<Note>
+  Results are sorted by search volume (highest to lowest). Related keywords may be `null` if not available for a particular keyword.
+</Note>
+
+## Response Fields
+
+### Top-Level Response
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Always `true` on successful requests |
+| `result_count` | integer | Number of keywords returned |
+| `cost` | float | Cost in USD for this request |
+| `data` | array | Array of keyword data objects |
+
+### Keyword Data Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `keyword` | string | The keyword term |
+| `search_volume` | integer | Monthly search volume |
+| `cpc` | float | Cost per click (advertising) |
+| `competition` | float | Competition level (0-100 scale) |
+| `competition_level` | string | Text representation: "low", "medium", "high" |
+| `country` | string | Country code |
+| `language` | string | Language code |
+| `intent` | string | Search intent: "commercial", "informational", "navigational", "transactional" |
+| `related_keywords` | array \| null | Related keywords or null if not available |
+
+## Pricing
+
+The Keyword Data API is priced based on the number of results returned.
+
+### Formula
+
+```
+Cost = max($0.01, (result_count / 100) × $0.03)
+```
+
+### Pricing Examples
+
+| Results | Calculation | Cost |
+|---------|-------------|------|
+| 0-33 | Minimum charge | $0.01 |
+| 50 | (50/100) × $0.03 | $0.015 |
+| 100 | (100/100) × $0.03 | $0.03 |
+| 150 | (150/100) × $0.03 | $0.045 |
+| 200 | (200/100) × $0.03 | $0.06 |
+
+<CardGroup cols={2}>
+  <Card title="Upfront Charge" icon="credit-card">
+    Credits are charged upfront before processing the request based on the expected result count.
+  </Card>
+  <Card title="Full Refund on Failures" icon="rotate-left">
+    If the API returns an error, you will receive a full refund of the charged credits.
+  </Card>
+</CardGroup>
+
+## Error Codes
+
+```json Error Response
+{
+  "error": "Your account does not have enough credits",
+  "code": "INSUFFICIENT_CREDITS"
+}
+```
+
+| Status | Code | Description |
+|--------|------|-------------|
+| 400 | `INVALID_REQUEST` | Invalid request format or malformed JSON |
+| 400 | `KEYWORD_REQUIRED` | Missing required keyword parameter |
+| 401 | `INVALID_API_KEY` | Authentication failed - invalid credentials |
+| 401 | `INVALID_CREDENTIALS` | Invalid username or password |
+| 401 | `CREDENTIALS_EXPIRED` | API credentials have expired |
+| 402 | `INSUFFICIENT_CREDITS` | Your account does not have enough credits |
+| 403 | `IP_NOT_WHITELISTED` | Request IP is not in your whitelist |
+| 429 | `RATE_LIMIT_EXCEEDED` | Too many requests, please slow down |
+| 500 | `INTERNAL_ERROR` | Server-side error occurred |
+| 502 | `WORKER_FAILED` | Backend worker failed to process request |
+| 504 | `TIMEOUT` | Request timed out |
+
+## Credits & Rate Limits
+
+<CardGroup cols={2}>
+  <Card title="Credits">
+    Each Keyword Data request consumes credits from your account balance based on the pricing formula above.
+  </Card>
+  <Card title="Rate Limits">
+    API requests are rate-limited to ensure fair usage. Contact support if you need higher limits.
+  </Card>
+</CardGroup>
