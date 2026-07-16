@@ -1,0 +1,188 @@
+---
+title: "Google Analytics — Reports"
+description: "Traffic trends, landing page performance, channel comparison, and engagement analysis"
+icon: "file-chart-column"
+---
+
+## Overview
+
+4 report tools for advanced Google Analytics analysis — trends, conversions, channels, and engagement quality.
+
+---
+
+## ga_report_traffic_trends
+
+Analyze traffic trends — daily metrics with growth analysis, peak/trough detection, and weekday vs. weekend patterns.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+
+**Response:**
+
+```json
+{
+  "report": "traffic-trends",
+  "summary": {
+    "total_days": 30,
+    "total_users": 15000,
+    "total_sessions": 22000,
+    "avg_daily_users": 500,
+    "avg_daily_sessions": 733,
+    "users_growth_rate": 12.5,
+    "sessions_growth_rate": 8.3,
+    "views_growth_rate": 10.1,
+    "peak_day": { "date": "2026-06-15", "users": 850 },
+    "trough_day": { "date": "2026-06-08", "users": 280 },
+    "avg_weekday_users": 550,
+    "avg_weekend_users": 350
+  },
+  "daily_metrics": [
+    { "date": "2026-06-01", "total_users": 520, "sessions": 780, "screen_page_views": 1600, "bounce_rate": 41.2, "average_session_duration": 130 }
+  ]
+}
+```
+
+<Tip>
+  Growth rates compare the 2nd half vs. 1st half of the date range. Use 30+ day ranges for meaningful trend analysis.
+</Tip>
+
+**Example Prompt:**
+
+> "Is my traffic growing? Show me the trend for the last 30 days"
+
+---
+
+## ga_report_landing_page_performance
+
+Analyze landing page conversion performance — which pages drive the most conversions from organic search.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `event_name` | string | No | All events | Filter by specific event (e.g. `"purchase"`, `"form_submit"`) |
+| `limit` | int | No | 50 | Max results (max 200) |
+
+**Response:**
+
+```json
+{
+  "report": "landing-page-performance",
+  "summary": {
+    "total_pages": 85,
+    "total_key_events": 450,
+    "overall_conversion_rate": 3.2,
+    "pages_with_conversions": 32,
+    "optimization_opportunities": 53
+  },
+  "top_converters": [
+    { "landing_page": "/pricing", "sessions": 500, "key_events": 45, "conversion_rate": 9.0 }
+  ],
+  "opportunities": [
+    { "landing_page": "/blog/seo-guide", "sessions": 1200, "key_events": 0, "conversion_rate": 0.0 }
+  ]
+}
+```
+
+<Note>
+  Filtered to **organic search traffic** only. `opportunities` lists high-traffic pages with zero conversions — prime optimization targets.
+</Note>
+
+**Example Prompt:**
+
+> "Which pages convert best from organic search?"
+
+---
+
+## ga_report_channel_comparison
+
+Compare traffic channels with automatic previous period comparison.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+
+**Response:**
+
+```json
+{
+  "report": "channel-comparison",
+  "_meta": { "total": 7, "returned": 7 },
+  "items": [
+    {
+      "name": "Organic Search",
+      "sessions": 12000,
+      "users": 9500,
+      "percentage": 54.5,
+      "previous_sessions": 10500,
+      "previous_users": 8200,
+      "sessions_change": 14.3,
+      "users_change": 15.8
+    }
+  ],
+  "period": { "start": "2026-06-01", "end": "2026-06-30" },
+  "previous_period": { "start": "2026-05-01", "end": "2026-05-31" }
+}
+```
+
+**Example Prompt:**
+
+> "How is organic search compared to paid search this month?"
+
+---
+
+## ga_report_engagement_analysis
+
+Analyze page engagement quality — categorize pages into high/medium/low engagement tiers.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `limit` | int | No | 30 | Max pages to analyze (max 100) |
+
+**Response:**
+
+```json
+{
+  "report": "engagement-analysis",
+  "summary": {
+    "total_pages": 85,
+    "site_avg_engagement_time": 45.2,
+    "site_bounce_rate": 42.3,
+    "site_engagement_rate": 72.7,
+    "high_engagement_pages": 15,
+    "needs_improvement_pages": 45,
+    "low_engagement_pages": 25
+  },
+  "high_engagement": [
+    { "page_path": "/blog/seo-guide", "page_title": "Complete SEO Guide", "screen_page_views": 5200, "users": 4100, "average_engagement_time": 95.3, "engagement_tier": "high" }
+  ],
+  "needs_improvement": [...],
+  "low_engagement": [...]
+}
+```
+
+**Engagement tiers:**
+- **High:** >= 1.5x site average engagement time
+- **Needs improvement:** 0.5-1.5x site average
+- **Low:** < 0.5x site average
+
+**Example Prompt:**
+
+> "Which pages have the worst engagement? Where are visitors bouncing?"

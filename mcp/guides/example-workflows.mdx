@@ -1,0 +1,153 @@
+---
+title: "Example Workflows"
+description: "Multi-tool workflows for common SEO analysis tasks"
+icon: "route"
+---
+
+## Overview
+
+The Semust MCP Server's real power comes from combining multiple tools. Below are proven workflows for common SEO tasks — just ask your AI assistant in natural language.
+
+---
+
+## Full Site SEO Audit
+
+Comprehensive analysis of your site's search performance.
+
+<Steps>
+  <Step title="List Projects">
+    *"List my Semust projects"* — Get your project ID and check which integrations are connected.
+  </Step>
+  <Step title="Performance Overview">
+    *"Show me my search performance for the last 30 days"* — Get the big picture with `get_performance`.
+  </Step>
+  <Step title="Find Quick Wins">
+    *"Find keywords on page 2 that I can push to page 1"* — Use `report_striking_distance` to identify low-hanging fruit.
+  </Step>
+  <Step title="CTR Optimization">
+    *"Which keywords have low CTR that I can improve?"* — Use `report_low_ctr` to find title/meta optimization opportunities.
+  </Step>
+  <Step title="Content Audit">
+    *"Show me underperforming pages"* — Use `report_thin_content` to find pages to merge or remove.
+  </Step>
+  <Step title="Cannibalization Check">
+    *"Are any of my pages competing for the same keywords?"* — Use `report_cannibalization` to find conflicts.
+  </Step>
+</Steps>
+
+---
+
+## Keyword Opportunity Analysis
+
+Find and prioritize keyword opportunities.
+
+<Steps>
+  <Step title="Current Rankings">
+    *"Show me my top keywords by clicks"* — `get_keywords` for baseline data.
+  </Step>
+  <Step title="Striking Distance">
+    *"Find keywords where I'm almost on page 1"* — `report_striking_distance` for positions 11-30.
+  </Step>
+  <Step title="Long-tail Opportunities">
+    *"Show me long-tail keyword opportunities"* — `report_long_tail` for 3+ word queries.
+  </Step>
+  <Step title="Question Queries">
+    *"What questions are people searching?"* — `report_questions` for FAQ and content ideas.
+  </Step>
+</Steps>
+
+---
+
+## Monthly Client Report
+
+Generate a comprehensive monthly report.
+
+<Steps>
+  <Step title="Monthly Summary">
+    *"Generate a monthly SEO report for June 2026"* — `report_monthly_summary` with month-over-month and year-over-year comparisons.
+  </Step>
+  <Step title="Analytics Overview">
+    *"Show me Google Analytics overview compared to last month"* — `ga_get_overview` with comparison.
+  </Step>
+  <Step title="Channel Performance">
+    *"Compare traffic channels this month vs last month"* — `ga_report_channel_comparison`.
+  </Step>
+  <Step title="Ranking Status">
+    *"How are my rankings? Show distribution and changes"* — `rank_get_overview` + `rank_report_gainers_losers`.
+  </Step>
+</Steps>
+
+---
+
+## Cross-Channel Traffic Analysis
+
+Understand traffic across organic, paid, and other channels.
+
+| Prompt | Tools Used |
+|--------|-----------|
+| *"Give me a complete picture of my traffic"* | `ga_get_overview` + `ga_report_channel_comparison` |
+| *"Compare organic and paid performance"* | `get_performance` + `gads_report_performance_overview` |
+| *"Which channels drive conversions?"* | `ga_report_channel_comparison` + `ga_get_key_events` |
+| *"Full marketing report"* | `gads_report_performance_overview` + `ga_get_overview` + `report_monthly_summary` |
+
+---
+
+## Content Strategy
+
+Find content opportunities and issues.
+
+| Prompt | Tools Used |
+|--------|-----------|
+| *"Which content is declining?"* | `report_content_decay` (6-12 month range) |
+| *"What questions should I create content for?"* | `report_questions` + `report_long_tail` |
+| *"Which pages drive the most conversions?"* | `ga_report_landing_page_performance` |
+| *"Find pages with high traffic but poor engagement"* | `ga_report_engagement_analysis` |
+
+---
+
+## Competitive AI Visibility
+
+Analyze your presence in AI-generated search results.
+
+<Steps>
+  <Step title="AI Visibility Overview">
+    *"Am I appearing in AI Overviews?"* — `ai_rank_get_overview` for your visibility score.
+  </Step>
+  <Step title="Keyword-Level Detail">
+    *"Which keywords show me in AI Overviews?"* — `ai_rank_get_keywords` for per-query data.
+  </Step>
+  <Step title="Competitor Analysis">
+    *"Who are my competitors in AI Overviews?"* — `ai_rank_get_domains` for competitive landscape.
+  </Step>
+</Steps>
+
+---
+
+## Multi-Engine Analysis
+
+Compare performance across Google, Bing, and Yandex.
+
+| Prompt | Tools Used |
+|--------|-----------|
+| *"Compare my performance across search engines"* | `get_performance` + `bing_get_query_stats` + `ym_get_overview` |
+| *"Compare keywords across Google and Bing"* | `get_keywords` + `bing_get_query_stats` |
+| *"Full crawl health across search engines"* | `indexing_get_status` + `bing_get_crawl_issues` + `bing_get_crawl_stats` |
+| *"Yandex vs Google traffic comparison"* | `ga_get_overview` + `ym_get_overview` |
+
+---
+
+## Google Ads Optimization
+
+Analyze and optimize your paid search campaigns.
+
+| Prompt | Tools Used |
+|--------|-----------|
+| *"How are my ads doing?"* | `gads_report_performance_overview` |
+| *"Where is my budget going?"* | `gads_report_spend_analysis` |
+| *"Find wasted ad spend"* | `gads_get_search_terms` (look for high-cost, zero-conversion terms) |
+| *"Compare paid vs organic keywords"* | `gads_get_search_terms` + `get_keywords` |
+| *"Full ads optimization review"* | `gads_get_campaigns(sort_by="roas")` + `gads_get_devices` + `gads_get_geo` |
+
+<Tip>
+  You can ask any of these as natural language questions. The AI will automatically select and chain the right tools.
+</Tip>

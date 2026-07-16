@@ -1,0 +1,67 @@
+---
+title: "Configuration"
+description: "Configure the Semust MCP Server"
+icon: "gear"
+---
+
+## Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `SEMUST_API_KEY` | Yes | — | Your Semust API key |
+| `SEMUST_BASE_URL` | No | `https://api.semust.com/v1/mcp` | API base URL |
+
+## Getting Your API Key
+
+<Steps>
+  <Step title="Sign In">
+    Go to [app.semust.com](https://app.semust.com) and sign in to your account.
+  </Step>
+  <Step title="Navigate to API Access">
+    Go to [API Access](https://app.semust.com/api/access) in your dashboard.
+  </Step>
+  <Step title="Copy Your Key">
+    Copy the API key. You'll use this in your `.env` file or client configuration.
+  </Step>
+</Steps>
+
+## Configuration Methods
+
+You can provide the API key in two ways:
+
+### Option 1: `.env` File
+
+Create a `.env` file in the MCP server directory:
+
+```bash .env
+SEMUST_API_KEY=your_api_key_here
+SEMUST_BASE_URL=https://api.semust.com/v1/mcp
+```
+
+### Option 2: Client Configuration
+
+Pass the API key directly in your AI client's MCP configuration (see [Setup Guides](/mcp/setup/claude-desktop)):
+
+```json
+{
+  "env": {
+    "SEMUST_API_KEY": "your_api_key_here"
+  }
+}
+```
+
+<Tip>
+  When both `.env` and client config provide the key, the client config takes precedence.
+</Tip>
+
+## Security Requirements
+
+The server enforces HTTPS for all API communication:
+
+- `SEMUST_BASE_URL` must use `https://`
+- The only exception is `localhost` / `127.0.0.1` for local development
+- Plaintext HTTP to remote hosts is rejected at startup
+
+<Warning>
+  Never share your API key or include it in client-side code. Keep it in environment variables or secure configuration files.
+</Warning>

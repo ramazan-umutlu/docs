@@ -1,0 +1,312 @@
+---
+title: "Google Search Console — Reports"
+description: "Advanced SEO reports: cannibalization, content decay, striking distance, and more"
+icon: "file-chart-line"
+---
+
+## Overview
+
+9 report tools for advanced Google Search Console analysis. These tools go beyond raw data to provide actionable SEO insights.
+
+<Note>
+  All report tools require `project_id`, `start_date`, and `end_date`. Google Search Console data has a **2-day delay**.
+</Note>
+
+---
+
+## report_cannibalization
+
+Find keyword cannibalization — queries where multiple pages from your site compete against each other in Google.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `limit` | int | No | 50 | Max results (max 200) |
+
+**Response:**
+
+```json
+{
+  "report": "keyword-cannibalization",
+  "_meta": { "total": 25, "returned": 25, "truncated": false },
+  "items": [
+    {
+      "query": "seo tools",
+      "totalClicks": 120,
+      "totalImpressions": 5000,
+      "averagePosition": 8.5,
+      "ctr": 0.024,
+      "issueType": "cannibalization",
+      "pages": [
+        { "page": "https://example.com/blog/best-seo-tools", "clicks": 80, "impressions": 3000, "averagePosition": 6.2 },
+        { "page": "https://example.com/tools", "clicks": 40, "impressions": 2000, "averagePosition": 12.1 }
+      ]
+    }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Find pages that are cannibalizing each other's keywords"
+
+<Tip>
+  Fix cannibalization by consolidating content, adding canonical tags, or redirecting the weaker page. A 30-day date range works best.
+</Tip>
+
+---
+
+## report_monthly_summary
+
+Generate a comprehensive end-of-month SEO performance report with year-over-year comparison.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | First day of the month (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | Last day of the month (YYYY-MM-DD) |
+
+**Response includes:** `top_queries` (top 20), `top_urls` (top 20), `query_winners`, `query_losers`, `page_winners`, `page_losers`, `top_20_new_pages`, `top_20_new_queries`, `current_summary`, `last_month_summary`, `last_year_summary`, `comparison_with_last_month`, `comparison_with_last_year`.
+
+**Example Prompt:**
+
+> "Generate a monthly SEO report for June 2026"
+
+---
+
+## report_long_tail
+
+Find long-tail keyword opportunities — queries with 3+ words that often have lower competition.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `condition` | string | No | `>=3` | Word count filter: `">=3"`, `">=4"`, `">=5"`, `"==3"`, `"==4"` |
+| `limit` | int | No | 50 | Max results (max 200) |
+
+**Response:** Same format as `get_keywords`, filtered to multi-word queries. Sorted by clicks descending.
+
+**Example Prompt:**
+
+> "Show me long-tail keyword opportunities with 4+ words"
+
+---
+
+## report_winner_loser
+
+Identify which keywords gained or lost traffic by comparing two time periods.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `metric` | string | No | `clicks` | What to compare: `"clicks"`, `"impressions"`, or `"position"` |
+| `limit` | int | No | 50 | Max results (max 200) |
+
+**Response:**
+
+```json
+{
+  "report": "winner-loser",
+  "_meta": { "total": 100, "returned": 50, "truncated": true },
+  "items": [
+    {
+      "query": "seo audit tool",
+      "firstPeriodTotal": 50,
+      "secondPeriodTotal": 120,
+      "change": 140.0,
+      "status": "Winner"
+    }
+  ]
+}
+```
+
+**Status values:** `"Winner"` (grew), `"Loser"` (declined), `"New"` (appeared in 2nd period), `"Lost"` (disappeared), `"Stable"`.
+
+<Tip>
+  Use a 60-day range for meaningful before/after comparison. The date range is automatically split in half.
+</Tip>
+
+**Example Prompt:**
+
+> "Which keywords gained or lost the most traffic in the last 60 days?"
+
+---
+
+## report_questions
+
+Find question-type search queries that bring users to the site.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `language` | string | No | `TR` | Question word detection: `"TR"` (Turkish) or `"EN"` (English) |
+| `limit` | int | No | 50 | Max results (max 200) |
+
+**Response:** Same format as `get_keywords`, filtered to question queries.
+
+**Detected question words:**
+- **Turkish:** nasil, neden, ne zaman, nerede, kim, hangi, ne kadar
+- **English:** how, why, when, where, who, which, what
+
+**Example Prompt:**
+
+> "What questions are people searching to find my site?"
+
+---
+
+## report_content_decay
+
+Find pages that are losing traffic over time (content decay analysis).
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (6-12 months ago recommended) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `limit` | int | No | 50 | Max results (max 200) |
+
+**Response:**
+
+```json
+{
+  "report": "content-decay",
+  "_meta": { "total": 15, "returned": 15, "truncated": false },
+  "items": [
+    {
+      "url": "https://example.com/blog/old-guide",
+      "isHaveDecay": true,
+      "lostClicks": 340,
+      "statsByMonth": {
+        "2026-01": { "clicks": 100, "impressions": 3000, "position": 5.2, "decayStart": false },
+        "2026-03": { "clicks": 60, "impressions": 2500, "position": 7.1, "decayStart": true },
+        "2026-06": { "clicks": 20, "impressions": 1500, "position": 12.3, "decayStart": false }
+      }
+    }
+  ]
+}
+```
+
+<Warning>
+  Use a **6-12 month date range** for best results. This report needs enough history to detect decline trends.
+</Warning>
+
+**Example Prompt:**
+
+> "Which pages are losing traffic and need to be refreshed?"
+
+---
+
+## report_striking_distance
+
+Find "striking distance" keywords — ranking on positions 11-30 (Google pages 2-3). These are quick wins.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `limit` | int | No | 50 | Max results (max 200) |
+
+**Response:** Same format as `get_keywords`, filtered to positions 11-30. Sorted by impressions descending.
+
+**Example Prompt:**
+
+> "Find keywords where I'm almost on page 1 — quick wins"
+
+<Tip>
+  Focus on high-impression items first. Improve content, add internal links, and optimize title/meta for these queries to push them to page 1.
+</Tip>
+
+---
+
+## report_low_ctr
+
+Find keywords or pages with low click-through rate that could be improved.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `type` | string | No | `query` | Analyze by `"query"` or `"page"` |
+| `limit` | int | No | 50 | Max results (max 200) |
+
+**Response:**
+
+```json
+{
+  "report": "low-ctr",
+  "_meta": { "total": 30, "returned": 30, "truncated": false },
+  "items": [
+    {
+      "key": "seo checklist",
+      "overall_clicks": 25,
+      "overall_impressions": 8000,
+      "average_overall_position": 4.5,
+      "average_overall_ctr": 0.003,
+      "extra_checks": {
+        "improvable": true,
+        "potential_additional_clicks": 375
+      }
+    }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Find keywords with low CTR that I can improve with better titles"
+
+<Tip>
+  `potential_additional_clicks` estimates how many more clicks you'd get if CTR reached 5%. Sorted by biggest opportunities first.
+</Tip>
+
+---
+
+## report_thin_content
+
+Find the lowest-performing content — pages or queries with the least traffic.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `type` | string | No | `query` | Analyze by `"query"` or `"page"` |
+| `limit` | int | No | 50 | Max results (max 200) |
+
+**Response:** Same format as `get_keywords`, sorted by clicks ascending (worst performers first).
+
+**Example Prompt:**
+
+> "Find underperforming pages for a content audit"
+
+<Tip>
+  Use `type="page"` for page-level content audits. Consider merging similar thin pages, adding more content, or redirecting/removing them.
+</Tip>

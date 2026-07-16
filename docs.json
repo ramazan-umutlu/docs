@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Semust API Documentation",
+  "name": "Semust Documentation",
   "colors": {
     "primary": "#0066FF",
     "light": "#3385FF",
@@ -11,7 +11,7 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Documentation",
+        "tab": "API Reference",
         "groups": [
           {
             "group": "Getting Started",
@@ -25,6 +25,77 @@
             "pages": [
               "api-reference/serp",
               "api-reference/keyword-data"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "MCP Server",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "mcp/overview",
+              "mcp/installation",
+              "mcp/configuration"
+            ]
+          },
+          {
+            "group": "Setup Guides",
+            "pages": [
+              "mcp/setup/claude-desktop",
+              "mcp/setup/cursor",
+              "mcp/setup/other-clients"
+            ]
+          },
+          {
+            "group": "Projects",
+            "pages": [
+              "mcp/tools/projects"
+            ]
+          },
+          {
+            "group": "Google Search Console",
+            "pages": [
+              "mcp/tools/gsc-data",
+              "mcp/tools/gsc-reports"
+            ]
+          },
+          {
+            "group": "Google Analytics",
+            "pages": [
+              "mcp/tools/ga-data",
+              "mcp/tools/ga-reports"
+            ]
+          },
+          {
+            "group": "Google Ads",
+            "pages": [
+              "mcp/tools/gads-data",
+              "mcp/tools/gads-reports"
+            ]
+          },
+          {
+            "group": "Rank Tracking",
+            "pages": [
+              "mcp/tools/rank-tracker",
+              "mcp/tools/ai-rank-tracker"
+            ]
+          },
+          {
+            "group": "Other Integrations",
+            "pages": [
+              "mcp/tools/indexing-monitor",
+              "mcp/tools/yandex-metrica",
+              "mcp/tools/bing-webmaster"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "mcp/guides/example-workflows",
+              "mcp/guides/troubleshooting",
+              "mcp/guides/security"
             ]
           }
         ]

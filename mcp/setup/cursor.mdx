@@ -1,0 +1,68 @@
+---
+title: "Cursor Setup"
+description: "Connect the Semust MCP Server to Cursor"
+icon: "code"
+---
+
+## Overview
+
+Cursor supports MCP servers in its AI chat. Once configured, you can query your Semust SEO data directly from Cursor's chat panel.
+
+## Configuration
+
+<Steps>
+  <Step title="Open Cursor Settings">
+    Go to **Cursor Settings** > **MCP** (or open the Command Palette and search for "MCP").
+  </Step>
+  <Step title="Add New MCP Server">
+    Click **"Add new MCP server"** and enter the following configuration:
+
+    ```json
+    {
+      "semust": {
+        "command": "python",
+        "args": ["C:\\full\\path\\to\\semust_mcp.py"],
+        "env": {
+          "SEMUST_API_KEY": "your_api_key_here",
+          "SEMUST_BASE_URL": "https://api.semust.com/v1/mcp"
+        }
+      }
+    }
+    ```
+
+    <Warning>
+      Replace the path with the actual location of your `semust_mcp.py` file.
+    </Warning>
+  </Step>
+  <Step title="Restart Cursor">
+    Restart Cursor to activate the MCP connection.
+  </Step>
+</Steps>
+
+## Using Semust Tools in Cursor
+
+Once connected, you can use natural language in Cursor's AI chat:
+
+- *"List my Semust projects"*
+- *"Show my top keywords for the last 30 days"*
+- *"Find quick win keywords on page 2"*
+
+Cursor will automatically select and call the appropriate Semust MCP tools.
+
+## Verify Connection
+
+1. Open Cursor's AI chat panel
+2. Check that Semust tools are listed in the MCP tools section
+3. Try asking: *"List my Semust projects"*
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Tools not listed | Restart Cursor after adding the configuration |
+| Connection error | Verify the path to `semust_mcp.py` and your API key |
+| Python not found | Use the full Python path in the `command` field |
+
+<Info>
+  For more help, see the full [Troubleshooting](/mcp/guides/troubleshooting) guide.
+</Info>

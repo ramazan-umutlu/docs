@@ -1,0 +1,58 @@
+---
+title: "Other MCP Clients"
+description: "Connect the Semust MCP Server to any MCP-compatible client"
+icon: "plug"
+---
+
+## Generic MCP Configuration
+
+Any client that supports the [Model Context Protocol](https://modelcontextprotocol.io) can connect to the Semust MCP Server. The standard configuration pattern is:
+
+```json
+{
+  "command": "python",
+  "args": ["/path/to/semust_mcp.py"],
+  "env": {
+    "SEMUST_API_KEY": "your_api_key_here",
+    "SEMUST_BASE_URL": "https://api.semust.com/v1/mcp"
+  }
+}
+```
+
+## Configuration Parameters
+
+| Parameter | Value | Description |
+|-----------|-------|-------------|
+| `command` | `python` | The Python executable (use full path if not in PATH) |
+| `args` | `["/path/to/semust_mcp.py"]` | Path to the MCP server script |
+| `env.SEMUST_API_KEY` | Your API key | Required for authentication |
+| `env.SEMUST_BASE_URL` | `https://api.semust.com/v1/mcp` | API endpoint (optional, this is the default) |
+
+## Compatible Clients
+
+The Semust MCP Server works with any MCP-compatible client, including:
+
+- **Claude Desktop** — [Setup Guide](/mcp/setup/claude-desktop)
+- **Cursor** — [Setup Guide](/mcp/setup/cursor)
+- **Claude Code** — CLI-based AI coding assistant
+- **Windsurf** — AI-powered code editor
+- **Any MCP-compatible tool** — Using the standard configuration above
+
+## Manual Server Startup
+
+For clients that require a running server rather than launching it automatically:
+
+```bash
+SEMUST_API_KEY=your_key python semust_mcp.py
+```
+
+Or on Windows PowerShell:
+
+```powershell
+$env:SEMUST_API_KEY="your_key"
+python semust_mcp.py
+```
+
+<Info>
+  The server communicates over **stdio** (standard input/output), which is the default MCP transport. No network ports are opened.
+</Info>

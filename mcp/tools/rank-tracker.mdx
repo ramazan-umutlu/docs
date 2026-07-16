@@ -1,0 +1,221 @@
+---
+title: "Rank Tracker"
+description: "Track keyword rankings, position history, and ranking changes"
+icon: "ranking-star"
+---
+
+## Overview
+
+5 tools for tracking keyword rankings in Google — current positions, historical trends, and ranking movement analysis.
+
+---
+
+## rank_get_keywords
+
+Get keyword rankings — current positions, changes, and search volume.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `device` | string | No | `mobile` | `"mobile"` or `"desktop"` |
+| `search` | string | No | All | Filter keywords by text (contains match) |
+| `location` | string | No | All | Filter by tracking location |
+| `trend` | string | No | All | Filter: `"rising"`, `"falling"`, `"stable"`, `"not_ranking"` |
+| `limit` | int | No | 50 | Max results (max 200) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 150, "returned": 50, "truncated": true },
+  "items": [
+    {
+      "query": "seo aracı",
+      "location": "Turkey",
+      "device": "mobile",
+      "position": 4,
+      "change_1d": 1,
+      "change_7d": 3,
+      "change_30d": 5,
+      "is_ranking": true,
+      "search_volume": 2400
+    }
+  ]
+}
+```
+
+<Tip>
+  `position` is the current Google ranking (1 = first result, 0 = not ranking). Positive `change` values mean the keyword moved UP (improved).
+</Tip>
+
+**Example Prompt:**
+
+> "Show me all keywords that are rising in rankings"
+
+---
+
+## rank_get_overview
+
+Get ranking overview — distribution, visibility score, and yesterday's changes.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `device` | string | No | `mobile` | `"mobile"` or `"desktop"` |
+
+**Response:**
+
+```json
+{
+  "summary": {
+    "total_tracked": 150,
+    "ranking": 120,
+    "not_ranking": 30,
+    "average_position": 14.5,
+    "visibility_score": 45.2
+  },
+  "distribution": {
+    "top_3": 12,
+    "top_10": 35,
+    "top_20": 65,
+    "top_30": 85,
+    "top_100": 120,
+    "not_ranking": 30
+  },
+  "yesterday_changes": {
+    "improved": 18,
+    "declined": 7,
+    "no_change": 95
+  },
+  "device": "mobile"
+}
+```
+
+<Tip>
+  `visibility_score` is 0-100%, weighted by position (top 1-3 positions get the highest weight).
+</Tip>
+
+**Example Prompt:**
+
+> "How are my rankings overall? Show me the distribution"
+
+---
+
+## rank_get_history
+
+Get daily average position history — track ranking trends over time.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `device` | string | No | `mobile` | `"mobile"` or `"desktop"` |
+| `days` | int | No | 30 | Days of history (max 90) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 30, "returned": 30 },
+  "items": [
+    { "date": "2026-06-15", "avg_position": 13.8, "total_queries": 150 }
+  ]
+}
+```
+
+<Tip>
+  Decreasing `avg_position` over time means rankings are improving (lower = better).
+</Tip>
+
+**Example Prompt:**
+
+> "Are my rankings improving? Show me the trend for the last 90 days"
+
+---
+
+## rank_report_gainers_losers
+
+Find keywords that gained or lost rankings — biggest movers in the selected period.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `device` | string | No | `mobile` | `"mobile"` or `"desktop"` |
+| `period` | string | No | `7d` | `"1d"` (yesterday), `"7d"` (last week), `"30d"` (last month) |
+| `limit` | int | No | 20 | Max results per group (max 100) |
+
+**Response:**
+
+```json
+{
+  "report": "gainers-losers",
+  "period": "7d",
+  "device": "mobile",
+  "gainers": {
+    "count": 18,
+    "items": [
+      { "query": "seo analiz", "position": 3, "change": 8, "is_ranking": true }
+    ]
+  },
+  "losers": {
+    "count": 7,
+    "items": [
+      { "query": "anahtar kelime", "position": 15, "change": -5, "is_ranking": true }
+    ]
+  }
+}
+```
+
+**Example Prompt:**
+
+> "Which keywords improved or dropped this week?"
+
+---
+
+## rank_report_distribution
+
+Get ranking position distribution — how many keywords in each position range.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `device` | string | No | `mobile` | `"mobile"` or `"desktop"` |
+
+**Response:**
+
+```json
+{
+  "report": "distribution",
+  "device": "mobile",
+  "total_tracked": 150,
+  "distribution": [
+    { "range": "1-3", "count": 12, "percentage": 8.0 },
+    { "range": "4-10", "count": 23, "percentage": 15.3 },
+    { "range": "11-20", "count": 30, "percentage": 20.0 },
+    { "range": "21-30", "count": 20, "percentage": 13.3 },
+    { "range": "31-100", "count": 35, "percentage": 23.3 },
+    { "range": "Not Ranking", "count": 30, "percentage": 20.0 }
+  ]
+}
+```
+
+**Position ranges:**
+- **1-3:** Top of page 1 — excellent visibility
+- **4-10:** Rest of page 1 — good visibility
+- **11-20:** Page 2 — striking distance, optimize these!
+- **21-30:** Page 3 — needs significant work
+- **31-100:** Low visibility
+- **Not Ranking:** Not found in top 100
+
+**Example Prompt:**
+
+> "How many of my keywords are on page 1?"

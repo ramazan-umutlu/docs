@@ -1,0 +1,139 @@
+---
+title: "AI Rank Tracker"
+description: "Track your visibility in Google's AI Overviews and AI-generated answers"
+icon: "brain"
+---
+
+## Overview
+
+3 tools for tracking your site's visibility in AI-generated search results — Google AI Overviews, ChatGPT citations, and other AI answer engines.
+
+<Note>
+  AI Overviews appear for ~15-30% of queries. Being cited is increasingly important as search evolves toward AI-first results.
+</Note>
+
+---
+
+## ai_rank_get_overview
+
+Get AI Overview visibility summary — how often your site appears in Google's AI-generated answers.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+
+**Response:**
+
+```json
+{
+  "summary": {
+    "total_queries": 150,
+    "in_ai_overview": 28,
+    "not_in_ai_overview": 110,
+    "pending": 12,
+    "top_3": 8,
+    "top_5": 15,
+    "top_10": 25,
+    "visibility_score": 32.5
+  },
+  "project_url": "https://example.com"
+}
+```
+
+<Tip>
+  `visibility_score` is 0-100%, weighted by position in the AI Overview (position 1 = 10 points, position 10 = 1 point).
+</Tip>
+
+**Example Prompt:**
+
+> "Am I appearing in AI Overviews? What's my AI visibility?"
+
+---
+
+## ai_rank_get_keywords
+
+Get AI Overview tracking data per keyword — which queries show your site in AI answers.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `search` | string | No | All | Filter keywords by text (contains match) |
+| `location` | string | No | All | Filter by tracking location |
+| `limit` | int | No | 50 | Max results (max 200) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 150, "returned": 50, "truncated": true },
+  "items": [
+    {
+      "query": "en iyi seo araçları",
+      "location": "Turkey",
+      "device": "mobile",
+      "position": 3,
+      "change_1d": 0,
+      "change_7d": 2,
+      "change_30d": 3,
+      "in_ai_overview": true,
+      "crawl_status": "completed"
+    }
+  ]
+}
+```
+
+<Tip>
+  `position > 0` means your site appears at that position in the AI Overview. `position = 0` means your site is NOT cited. Compare with `rank_get_keywords` to see how AI visibility differs from traditional rankings.
+</Tip>
+
+**Example Prompt:**
+
+> "Which of my keywords appear in AI Overviews?"
+
+---
+
+## ai_rank_get_domains
+
+Get top domains appearing in AI Overviews — see which competitors are cited most in AI answers.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `limit` | int | No | 10 | Max results (max 50) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 25, "returned": 10 },
+  "project_url": "https://example.com",
+  "items": [
+    {
+      "domain": "example.com",
+      "appearance_count": 28,
+      "avg_position": 2.5,
+      "is_our_domain": true
+    },
+    {
+      "domain": "competitor.com",
+      "appearance_count": 42,
+      "avg_position": 1.8,
+      "is_our_domain": false
+    }
+  ]
+}
+```
+
+<Tip>
+  Domains NOT in your list are competitors being cited instead of you. Use this to identify who dominates AI answers in your niche.
+</Tip>
+
+**Example Prompt:**
+
+> "Which competitors appear in AI Overviews more than me?"

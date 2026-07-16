@@ -1,0 +1,135 @@
+---
+title: "Google Ads — Reports"
+description: "Performance overview, spend analysis, and conversion breakdown reports"
+icon: "file-invoice-dollar"
+---
+
+## Overview
+
+3 report tools for high-level Google Ads analysis — performance summaries, spend breakdowns, and conversion details.
+
+---
+
+## gads_report_performance_overview
+
+Get a comprehensive Google Ads performance overview with campaign rankings and type breakdown.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `compare_with_previous` | bool | No | `false` | Include previous period comparison |
+
+**Response:**
+
+```json
+{
+  "report": "performance-overview",
+  "summary": {
+    "total_impressions": 150000,
+    "total_clicks": 21000,
+    "total_cost": 7500.0,
+    "total_conversions": 950,
+    "total_conversion_value": 48000.0,
+    "overall_ctr": 14.0,
+    "overall_cpc": 0.36,
+    "overall_cpa": 7.89,
+    "overall_roas": 6.40,
+    "campaign_count": 12,
+    "currency": "TRY"
+  },
+  "top_campaigns": [
+    { "name": "Brand - Search", "type": "SEARCH", "cost": 1200.0, "roas": 8.5, "conversions": 180 }
+  ],
+  "by_type": [
+    { "type": "SEARCH", "campaign_count": 5, "cost": 4500.0, "cost_share_pct": 60.0, "conversions": 700, "roas": 7.2 }
+  ]
+}
+```
+
+With `compare_with_previous=true`, also returns percentage changes and `previous_period`.
+
+**Example Prompt:**
+
+> "How are my ads doing? Give me an overview compared to last month"
+
+---
+
+## gads_report_spend_analysis
+
+Analyze Google Ads spending — daily spend trends, per-campaign cost breakdown, and ROI metrics.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+
+**Response:**
+
+```json
+{
+  "report": "spend-analysis",
+  "summary": {
+    "total_cost": 7500.0,
+    "total_conversions": 950,
+    "total_conversion_value": 48000.0,
+    "total_impressions": 150000,
+    "total_clicks": 21000,
+    "avg_daily_spend": 250.0,
+    "overall_roas": 6.40,
+    "overall_cpa": 7.89,
+    "currency": "TRY",
+    "days": 30
+  },
+  "daily_spend": [
+    { "date": "2026-06-01", "cost": 245.0, "conversions": 30, "roas": 6.5 }
+  ],
+  "by_campaign": [
+    { "name": "Brand - Search", "type": "SEARCH", "cost": 1200.0, "cost_share_pct": 16.0, "conversions": 180, "roas": 8.5 }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Where is my ad budget going? Show me the spend breakdown"
+
+---
+
+## gads_report_conversion_breakdown
+
+Get conversion breakdown by action type — see which conversion actions are firing and their values.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `campaign_id` | string | No | All | Specific campaign ID, or empty for all |
+
+**Response:**
+
+```json
+{
+  "report": "conversion-breakdown",
+  "_meta": { "total": 4, "returned": 4 },
+  "summary": { "total_conversions": 950, "total_conversion_value": 48000.0 },
+  "currency": "TRY",
+  "items": [
+    { "conversion_action_name": "form_submit", "conversions": 500, "conversions_value": 25000.0 },
+    { "conversion_action_name": "purchase", "conversions": 200, "conversions_value": 18000.0 }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "What types of conversions am I getting from my ads?"

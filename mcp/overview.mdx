@@ -1,0 +1,70 @@
+---
+title: "Semust MCP Server"
+description: "Connect Claude Desktop, Cursor, and other AI tools to your Semust SEO data"
+icon: "robot"
+---
+
+## What is the Semust MCP Server?
+
+The Semust MCP Server is a [Model Context Protocol](https://modelcontextprotocol.io) server that connects AI assistants like Claude Desktop and Cursor directly to your Semust SEO data. Ask questions about your SEO performance in natural language and get instant insights.
+
+<CardGroup cols={3}>
+  <Card title="56 Tools" icon="wrench">
+    Comprehensive coverage across Google Search Console, Analytics, Ads, Rank Tracker, Bing, and Yandex.
+  </Card>
+  <Card title="12 Categories" icon="folder">
+    Organized tool groups for every aspect of SEO and advertising analytics.
+  </Card>
+  <Card title="Local & Secure" icon="shield">
+    Runs on your machine. Your API key never leaves your environment.
+  </Card>
+</CardGroup>
+
+## Supported AI Clients
+
+<CardGroup cols={3}>
+  <Card title="Claude Desktop" icon="message-bot" href="/mcp/setup/claude-desktop">
+    Full MCP support with auto-discovery of all 56 tools.
+  </Card>
+  <Card title="Cursor" icon="code" href="/mcp/setup/cursor">
+    Use Semust tools directly in your code editor's AI chat.
+  </Card>
+  <Card title="Other MCP Clients" icon="plug" href="/mcp/setup/other-clients">
+    Any client supporting the Model Context Protocol.
+  </Card>
+</CardGroup>
+
+## Tool Categories
+
+| Category | Tools | Description |
+|----------|-------|-------------|
+| [Projects](/mcp/tools/projects) | 1 | List projects and integration status |
+| [Search Console — Data](/mcp/tools/gsc-data) | 3 | Keywords, pages, and performance data |
+| [Search Console — Reports](/mcp/tools/gsc-reports) | 9 | Cannibalization, content decay, striking distance, and more |
+| [Google Analytics — Data](/mcp/tools/ga-data) | 6 | Traffic, sources, pages, geo, devices, events |
+| [Google Analytics — Reports](/mcp/tools/ga-reports) | 4 | Trends, landing pages, channels, engagement |
+| [Google Ads — Data](/mcp/tools/gads-data) | 5 | Campaigns, daily metrics, geo, devices, search terms |
+| [Google Ads — Reports](/mcp/tools/gads-reports) | 3 | Performance overview, spend, conversions |
+| [Rank Tracker](/mcp/tools/rank-tracker) | 5 | Keyword positions, history, gainers/losers |
+| [AI Rank Tracker](/mcp/tools/ai-rank-tracker) | 3 | AI Overview visibility and competitor analysis |
+| [Indexing Monitor](/mcp/tools/indexing-monitor) | 2 | Index status and history |
+| [Yandex Metrica](/mcp/tools/yandex-metrica) | 6 | Yandex traffic, pages, geo, devices, search phrases |
+| [Bing Webmaster](/mcp/tools/bing-webmaster) | 9 | Bing queries, pages, crawl stats, links |
+
+## Quick Start
+
+<Steps>
+  <Step title="Get Your API Key">
+    Go to [app.semust.com/api/access](https://app.semust.com/api/access) to get your Semust API key.
+  </Step>
+  <Step title="Install the Server">
+    Install the MCP server and its dependencies. See the [Installation](/mcp/installation) guide.
+  </Step>
+  <Step title="Configure Your AI Client">
+    Add the server to [Claude Desktop](/mcp/setup/claude-desktop), [Cursor](/mcp/setup/cursor), or your preferred [MCP client](/mcp/setup/other-clients).
+  </Step>
+</Steps>
+
+<Info>
+  Requires **Python 3.10+** and a Semust API key with an active subscription.
+</Info>

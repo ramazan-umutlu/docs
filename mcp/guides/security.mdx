@@ -1,0 +1,83 @@
+---
+title: "Security"
+description: "Security architecture and best practices for the Semust MCP Server"
+icon: "shield"
+---
+
+## Security Architecture
+
+The Semust MCP Server is designed with a local-first security model. Your API key and data stay on your machine.
+
+```
+You ─── AI Client (Claude/Cursor) ─── MCP Server (local process)
+                                           │
+                                      HTTPS only
+                                           │
+                                    Semust API (cloud)
+                                           │
+                              Your connected data sources:
+                              ├── Google Search Console
+                              ├── Google Analytics 4
+                              ├── Google Ads
+                              ├── Bing Webmaster Tools
+                              ├── Yandex Metrica
+                              └── Rank Tracker
+```
+
+<CardGroup cols={2}>
+  <Card title="Local Execution" icon="house">
+    The server runs as a local process on your machine. No cloud deployment, no external servers.
+  </Card>
+  <Card title="HTTPS Only" icon="lock">
+    All API communication uses HTTPS encryption. Plaintext HTTP is rejected (except localhost for development).
+  </Card>
+  <Card title="No Data Storage" icon="database">
+    The server is stateless — it doesn't store any data on disk. Each request is fetched fresh from the API.
+  </Card>
+  <Card title="Key Isolation" icon="key">
+    Your API key stays in your local environment (.env file or client config). It never leaves your machine.
+  </Card>
+</CardGroup>
+
+## How Data Flows
+
+1. **You ask a question** in Claude Desktop or Cursor
+2. **The AI client** calls the appropriate MCP tool
+3. **The MCP server** (running locally) makes an HTTPS request to `api.semust.com` with your API key
+4. **Semust API** fetches data from your connected sources (Google, Bing, Yandex)
+5. **SEO data** is returned to the AI for analysis — the AI sees your SEO data but never your API key
+
+<Note>
+  All Semust MCP tools are **read-only**. They fetch data but never modify your accounts, campaigns, or settings.
+</Note>
+
+## API Key Best Practices
+
+<Warning>
+  Never share your API key or include it in client-side code, public repositories, or screenshots.
+</Warning>
+
+| Do | Don't |
+|----|-------|
+| Store in `.env` file (git-ignored) | Hardcode in source code |
+| Use client config `env` field | Commit to version control |
+| Use separate keys per environment | Share keys between users |
+| Rotate keys if compromised | Post keys in chat/email |
+
+## HTTPS Enforcement
+
+The server validates `SEMUST_BASE_URL` at startup:
+
+- `https://` — Allowed (required for production)
+- `http://localhost` — Allowed (development only)
+- `http://127.0.0.1` — Allowed (development only)
+- `http://` to any other host — **Rejected** with an error
+
+This prevents accidental data transmission over unencrypted connections.
+
+## Network Behavior
+
+- The server communicates with your AI client via **stdio** (standard input/output) — no network ports are opened
+- The only outbound network connection is to `api.semust.com` over HTTPS
+- No inbound connections are accepted
+- No data is sent to any third party

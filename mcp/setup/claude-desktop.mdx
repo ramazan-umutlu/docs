@@ -1,0 +1,160 @@
+---
+title: "Claude Desktop Setup"
+description: "Connect the Semust MCP Server to Claude Desktop"
+icon: "message-bot"
+---
+
+## Overview
+
+Claude Desktop has built-in MCP support. Once configured, all 56 Semust tools become available directly in your Claude conversations.
+
+## Configuration
+
+<Steps>
+  <Step title="Locate the Config File">
+    Open your Claude Desktop configuration file:
+
+    <CodeGroup>
+
+    ```text Windows
+    %APPDATA%\Claude\claude_desktop_config.json
+    ```
+
+    ```text macOS
+    ~/Library/Application Support/Claude/claude_desktop_config.json
+    ```
+
+    </CodeGroup>
+  </Step>
+  <Step title="Add the Semust MCP Server">
+    Add the following to your `claude_desktop_config.json`:
+
+    ```json claude_desktop_config.json
+    {
+      "mcpServers": {
+        "semust": {
+          "command": "python",
+          "args": ["C:\\full\\path\\to\\semust_mcp.py"],
+          "env": {
+            "SEMUST_API_KEY": "your_api_key_here",
+            "SEMUST_BASE_URL": "https://api.semust.com/v1/mcp"
+          }
+        }
+      }
+    }
+    ```
+
+    <Warning>
+      Replace `C:\\full\\path\\to\\semust_mcp.py` with the actual path to your `semust_mcp.py` file. Use double backslashes on Windows.
+    </Warning>
+  </Step>
+  <Step title="Restart Claude Desktop">
+    Fully quit and reopen Claude Desktop for the changes to take effect.
+  </Step>
+</Steps>
+
+## Auto-Allow Tools (Optional)
+
+To skip the approval prompt for each tool call, add an `alwaysAllow` list:
+
+```json claude_desktop_config.json
+{
+  "mcpServers": {
+    "semust": {
+      "command": "python",
+      "args": ["C:\\full\\path\\to\\semust_mcp.py"],
+      "env": {
+        "SEMUST_API_KEY": "your_api_key_here",
+        "SEMUST_BASE_URL": "https://api.semust.com/v1/mcp"
+      },
+      "alwaysAllow": [
+        "list_projects",
+        "get_keywords",
+        "get_pages",
+        "get_performance",
+        "report_cannibalization",
+        "report_monthly_summary",
+        "report_long_tail",
+        "report_winner_loser",
+        "report_questions",
+        "report_content_decay",
+        "report_striking_distance",
+        "report_low_ctr",
+        "report_thin_content",
+        "ga_get_overview",
+        "ga_get_traffic_sources",
+        "ga_get_pages",
+        "ga_get_geo",
+        "ga_get_devices",
+        "ga_get_key_events",
+        "ga_report_traffic_trends",
+        "ga_report_landing_page_performance",
+        "ga_report_channel_comparison",
+        "ga_report_engagement_analysis",
+        "gads_get_campaigns",
+        "gads_get_daily_metrics",
+        "gads_get_geo",
+        "gads_get_devices",
+        "gads_get_search_terms",
+        "gads_report_performance_overview",
+        "gads_report_spend_analysis",
+        "gads_report_conversion_breakdown",
+        "rank_get_keywords",
+        "rank_get_overview",
+        "rank_get_history",
+        "rank_report_gainers_losers",
+        "rank_report_distribution",
+        "ai_rank_get_overview",
+        "ai_rank_get_keywords",
+        "ai_rank_get_domains",
+        "indexing_get_status",
+        "indexing_get_history",
+        "ym_get_overview",
+        "ym_get_traffic",
+        "ym_get_pages",
+        "ym_get_geo",
+        "ym_get_devices",
+        "ym_get_search_phrases",
+        "bing_get_query_stats",
+        "bing_get_page_stats",
+        "bing_get_crawl_stats",
+        "bing_get_crawl_issues",
+        "bing_get_rank_traffic",
+        "bing_get_link_counts",
+        "bing_get_keyword_stats",
+        "bing_get_url_traffic",
+        "bing_get_url_links"
+      ]
+    }
+  }
+}
+```
+
+<Tip>
+  All Semust tools are read-only — they only fetch data and never modify anything. It's safe to auto-allow all of them.
+</Tip>
+
+## Verify Connection
+
+After restarting Claude Desktop:
+
+1. Look for the MCP tools icon (hammer) in the chat input area
+2. Click it to see the list of available Semust tools
+3. Try a test prompt:
+
+> "List my Semust projects"
+
+You should see your projects with their integration status.
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Tools don't appear | Check that the path to `semust_mcp.py` is correct and uses double backslashes on Windows |
+| "API key" error | Verify your `SEMUST_API_KEY` in the config file |
+| Python not found | Ensure Python 3.10+ is in your system PATH. Try using the full path: `"command": "C:\\Python310\\python.exe"` |
+| Server crashes on start | Run `python semust_mcp.py` manually in a terminal to see the error message |
+
+<Info>
+  For more help, see the full [Troubleshooting](/mcp/guides/troubleshooting) guide.
+</Info>

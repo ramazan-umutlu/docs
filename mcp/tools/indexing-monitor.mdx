@@ -1,0 +1,113 @@
+---
+title: "Indexing Monitor"
+description: "Monitor page indexing status and track indexing trends"
+icon: "spider-web"
+---
+
+## Overview
+
+2 tools for monitoring how Google indexes your pages — health scores, coverage breakdowns, and historical trends.
+
+---
+
+## indexing_get_status
+
+Get URL indexing status — health score, indexed/not-indexed counts, coverage breakdown, and warnings.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+
+**Response:**
+
+```json
+{
+  "health_score": {
+    "score": 85,
+    "indexing_rate": 92.0,
+    "crawl_freshness": 88.0,
+    "warning_count": 5
+  },
+  "counts": {
+    "total": 500,
+    "indexed": 460,
+    "not_indexed": 30,
+    "never_checked": 10,
+    "warnings": 5
+  },
+  "coverage_groups": [
+    { "state": "INDEXED", "count": 460 },
+    { "state": "EXCLUDED", "count": 20 },
+    { "state": "SUBMITTED", "count": 10 }
+  ],
+  "recent_alerts": {
+    "deindexed_count": 2,
+    "reindexed_count": 5,
+    "stale_crawl_count": 3
+  },
+  "not_indexed_urls": [
+    {
+      "url": "https://example.com/old-page",
+      "coverage_state": "EXCLUDED",
+      "warning_type": "canonical_mismatch"
+    }
+  ]
+}
+```
+
+**Health score ranges:**
+
+| Score | Status | Action |
+|-------|--------|--------|
+| 80-100 | Excellent | No action needed |
+| 60-80 | Good | Minor improvements possible |
+| 40-60 | Needs attention | Review warnings and fix issues |
+| Below 40 | Critical | Immediate action required |
+
+**Warning types:**
+- `blocked` — robots.txt or meta noindex preventing indexing
+- `canonical_mismatch` — Google chose a different canonical URL
+- `stale_crawl` — Not recrawled in 120+ days
+
+**Example Prompt:**
+
+> "Are my pages indexed? What's my indexing health?"
+
+---
+
+## indexing_get_history
+
+Get indexing history — daily indexed/not-indexed counts over time.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `days` | int | No | 30 | Days of history (max 60) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 30, "returned": 30 },
+  "items": [
+    {
+      "date": "2026-06-15",
+      "indexed_count": 460,
+      "not_indexed_count": 30,
+      "warning_count": 5
+    }
+  ]
+}
+```
+
+<Tip>
+  Increasing `indexed_count` = pages getting picked up. Sudden drops = possible deindexing issue. Rising `warning_count` = growing technical problems.
+</Tip>
+
+**Example Prompt:**
+
+> "Is Google indexing more of my pages over time?"

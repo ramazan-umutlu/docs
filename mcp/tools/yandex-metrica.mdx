@@ -1,0 +1,227 @@
+---
+title: "Yandex Metrica"
+description: "Yandex analytics: traffic, pages, geography, devices, and search phrases"
+icon: "chart-mixed"
+---
+
+## Overview
+
+6 tools for fetching Yandex Metrica analytics data — comprehensive visitor analytics for the Russian and Turkish markets.
+
+<Note>
+  Yandex Metrica data is **near real-time**. Use `today - 1 day` as the most recent `end_date` for complete data.
+</Note>
+
+---
+
+## ym_get_overview
+
+Get comprehensive Yandex Metrica overview — visitors, visits, pageviews, bounce rate, daily trends, and top sources/pages/geo.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `compare_with_previous` | bool | No | `false` | Compare with previous period |
+
+**Response:**
+
+```json
+{
+  "counter_id": "12345678",
+  "counter_name": "My Website",
+  "period": { "start": "2026-06-01", "end": "2026-06-30" },
+  "metrics": {
+    "visitors": 8500,
+    "visits": 12000,
+    "pageviews": 28000,
+    "new_users": 6500,
+    "bounce_rate": 38.5,
+    "avg_duration": 145.2,
+    "page_depth": 2.3
+  },
+  "daily_metrics": [...],
+  "sources": [...],
+  "pages_top": [...],
+  "geo_countries": [...],
+  "device_categories": [...],
+  "search_phrases": [...],
+  "traffic_source_breakdown": {...}
+}
+```
+
+With `compare_with_previous=true`, also returns `comparison` with percentage changes.
+
+<Tip>
+  This is the most comprehensive Yandex tool. Start here for any Yandex Metrica question — it returns data that other individual tools provide in more detail.
+</Tip>
+
+**Example Prompt:**
+
+> "Show me my Yandex Metrica overview for this month compared to last month"
+
+---
+
+## ym_get_traffic
+
+Get Yandex Metrica traffic source data.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `filter` | string | No | `sources` | `"sources"`, `"search_engines"`, or `"social"` |
+| `limit` | int | No | 20 | Max results (max 100) |
+
+**Filter values:**
+- `sources` — All traffic sources (organic, direct, social, etc.)
+- `search_engines` — Only search engine traffic (Yandex, Google, etc.)
+- `social` — Only social media traffic
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 12, "returned": 12, "filter": "sources" },
+  "items": [
+    { "name": "Organic Search", "value": 5000, "second_value": 4200, "percentage": 41.7 }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Where does my Yandex traffic come from?"
+
+---
+
+## ym_get_pages
+
+Get Yandex Metrica page performance data.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `filter` | string | No | `top` | `"top"`, `"landing"`, `"exit"`, or `"titles"` |
+| `limit` | int | No | 20 | Max results (max 100) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 80, "returned": 20, "filter": "top" },
+  "items": [
+    { "name": "/blog/seo-rehberi", "value": 2500, "second_value": 1800, "percentage": 8.9 }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "What are my top pages in Yandex Metrica?"
+
+---
+
+## ym_get_geo
+
+Get Yandex Metrica geographic visitor data.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `filter` | string | No | `countries` | `"countries"`, `"regions"`, or `"cities"` |
+| `limit` | int | No | 20 | Max results (max 100) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 25, "returned": 20, "filter": "countries" },
+  "items": [
+    { "name": "Turkey", "value": 8000, "second_value": 6500, "percentage": 66.7 }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Where are my Yandex visitors from?"
+
+---
+
+## ym_get_devices
+
+Get Yandex Metrica device/browser/OS breakdown.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `filter` | string | No | `device` | `"device"`, `"browser"`, or `"os"` |
+| `limit` | int | No | 20 | Max results (max 100) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 3, "returned": 3, "filter": "device" },
+  "items": [
+    { "name": "Mobile", "value": 7200, "second_value": 5800, "percentage": 60.0 }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "What devices do my Yandex visitors use?"
+
+---
+
+## ym_get_search_phrases
+
+Get Yandex search phrases — keywords visitors used to find the site via Yandex search.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `limit` | int | No | 20 | Max results (max 100) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 200, "returned": 20 },
+  "items": [
+    { "phrase": "seo analiz aracı", "visits": 250, "users": 220, "percentage": 5.0 }
+  ]
+}
+```
+
+<Tip>
+  Unlike Google Search Console, Yandex does not hide search phrases behind "(not provided)". Compare with `get_keywords` (Google) to see search engine differences.
+</Tip>
+
+**Example Prompt:**
+
+> "What are people searching on Yandex to find my site?"

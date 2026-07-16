@@ -1,0 +1,302 @@
+---
+title: "Bing Webmaster"
+description: "Bing search queries, page stats, crawl data, links, and keyword research"
+icon: "globe"
+---
+
+## Overview
+
+9 tools for fetching Bing Webmaster data — search performance, crawl health, backlinks, and keyword research.
+
+---
+
+## bing_get_query_stats
+
+Get Bing search query statistics — top queries with clicks, impressions, CTR, and position.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 100, "returned": 100, "truncated": false },
+  "items": [
+    {
+      "Query": "seo aracı",
+      "Date": "2026-06-15",
+      "Impressions": 500,
+      "Clicks": 45,
+      "Ctr": 9.0,
+      "AvgClickPosition": 3.2,
+      "AvgImpressionPosition": 5.1
+    }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "What are my top keywords on Bing?"
+
+---
+
+## bing_get_page_stats
+
+Get Bing page-level performance — pages with clicks, impressions, CTR, and position.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 50, "returned": 50, "truncated": false },
+  "items": [
+    {
+      "Query": "https://example.com/blog/seo-guide",
+      "Impressions": 1200,
+      "Clicks": 95,
+      "Ctr": 7.9,
+      "AvgClickPosition": 4.1,
+      "AvgImpressionPosition": 6.3,
+      "Date": "2026-06-15"
+    }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Which pages perform best on Bing?"
+
+---
+
+## bing_get_crawl_stats
+
+Get Bing crawl statistics over time — crawled pages, errors, indexed count, and inbound links.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 30, "returned": 30 },
+  "items": [
+    {
+      "Date": "2026-06-15",
+      "CrawledPages": 250,
+      "CrawlErrors": 3,
+      "InIndex": 480,
+      "InLinks": 1500
+    }
+  ]
+}
+```
+
+<Tip>
+  Compare `InIndex` trend to see if Bing is indexing more or fewer pages over time. Combine with `indexing_get_status` (Google) for a complete crawl health picture.
+</Tip>
+
+**Example Prompt:**
+
+> "How is Bing crawling my site?"
+
+---
+
+## bing_get_crawl_issues
+
+Get Bing crawl issues — URLs with errors, HTTP codes, and issue types.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 8, "returned": 8, "truncated": false },
+  "items": [
+    {
+      "Url": "https://example.com/old-page",
+      "HttpCode": 404,
+      "IssueType": "NotFound",
+      "DateDetected": "2026-06-10"
+    }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Are there any crawl errors on Bing?"
+
+---
+
+## bing_get_rank_traffic
+
+Get Bing rank and traffic statistics over time — daily impressions and clicks.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 30, "returned": 30 },
+  "items": [
+    { "Date": "2026-06-15", "Impressions": 800, "Clicks": 65 }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Show me my Bing traffic trends"
+
+---
+
+## bing_get_link_counts
+
+Get Bing inbound link counts per URL — see which pages have the most backlinks according to Bing.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `page` | int | No | 0 | Pagination page number |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 150, "returned": 50, "page": 0 },
+  "items": [
+    { "Url": "https://example.com/", "LinkCount": 350 },
+    { "Url": "https://example.com/blog/seo-guide", "LinkCount": 85 }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Which of my pages have the most backlinks on Bing?"
+
+---
+
+## bing_get_keyword_stats
+
+Get Bing keyword volume data — broad and exact match impressions for a specific keyword.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `keyword` | string | **Yes** | — | The keyword to research |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 12, "returned": 12, "keyword": "seo tools" },
+  "items": [
+    {
+      "Keyword": "seo tools",
+      "Date": "2026-06-01",
+      "BroadImpressions": 15000,
+      "ExactImpressions": 8500
+    }
+  ]
+}
+```
+
+<Tip>
+  `BroadImpressions` includes keyword variations. `ExactImpressions` is for the exact phrase only. Useful for comparing Bing vs. Google keyword volume.
+</Tip>
+
+**Example Prompt:**
+
+> "How popular is 'seo tools' on Bing?"
+
+---
+
+## bing_get_url_traffic
+
+Get Bing traffic data for a specific URL — impressions and clicks over time.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `url` | string | **Yes** | — | The full page URL to check |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 30, "returned": 30, "url": "https://example.com/blog/seo-guide" },
+  "items": [
+    { "Url": "https://example.com/blog/seo-guide", "Impressions": 120, "Clicks": 15, "Date": "2026-06-15" }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "How does my SEO guide page perform on Bing?"
+
+---
+
+## bing_get_url_links
+
+Get Bing inbound links for a specific URL — see which external pages link to a given URL.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `url` | string | **Yes** | — | The page URL to check backlinks for |
+| `page` | int | No | 0 | Pagination page number |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 25, "returned": 25, "url": "https://example.com/blog/seo-guide", "page": 0 },
+  "items": [
+    {
+      "Title": "Best SEO Resources",
+      "Url": "https://other-site.com/resources",
+      "AnchorText": "comprehensive SEO guide"
+    }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Who links to my SEO guide page on Bing?"

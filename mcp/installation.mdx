@@ -1,0 +1,70 @@
+---
+title: "Installation"
+description: "Install the Semust MCP Server on your machine"
+icon: "download"
+---
+
+## Prerequisites
+
+- **Python 3.10** or later
+- **pip** (Python package manager)
+- A **Semust API key** from [app.semust.com/api/access](https://app.semust.com/api/access)
+
+## Install Dependencies
+
+Clone or download the MCP server files, then install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+The dependencies are:
+- `mcp>=1.0.0` — Model Context Protocol framework
+- `requests>=2.32.0` — HTTP client
+- `python-dotenv>=1.0.0` — Environment variable management
+
+## Verify Installation
+
+Check that Python and the dependencies are correctly installed:
+
+```bash
+python --version   # Should show 3.10+
+python -c "from mcp.server.fastmcp import FastMCP; print('MCP OK')"
+```
+
+## Environment Setup
+
+Create a `.env` file in the MCP server directory:
+
+```bash .env
+SEMUST_API_KEY=your_api_key_here
+```
+
+<Warning>
+  Never commit your `.env` file to version control. It is already included in `.gitignore`.
+</Warning>
+
+## Test the Server
+
+Run the server manually to verify everything works:
+
+```bash
+python semust_mcp.py
+```
+
+If the server starts without errors, you're ready to configure your AI client.
+
+<Note>
+  In normal use, your AI client (Claude Desktop, Cursor, etc.) starts the server automatically. You only need to run it manually for testing.
+</Note>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Configuration" icon="gear" href="/mcp/configuration">
+    Learn about all configuration options and environment variables.
+  </Card>
+  <Card title="Setup Guides" icon="message-bot" href="/mcp/setup/claude-desktop">
+    Connect the server to Claude Desktop, Cursor, or other AI clients.
+  </Card>
+</CardGroup>

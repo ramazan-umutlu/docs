@@ -1,0 +1,249 @@
+---
+title: "Google Ads — Data"
+description: "Campaign performance, daily metrics, geographic, device, and search term data"
+icon: "rectangle-ad"
+---
+
+## Overview
+
+5 tools for fetching Google Ads data — campaigns, daily trends, geographic and device breakdowns, and search terms.
+
+<Note>
+  Google Ads data has a **~1-day delay**. Use `today - 1 day` as the most recent `end_date`.
+</Note>
+
+---
+
+## gads_get_campaigns
+
+Get Google Ads campaign performance data.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `campaign_type` | string | No | All | Filter: `"SEARCH"`, `"PERFORMANCE_MAX"`, `"DISPLAY"`, `"VIDEO"`, `"SHOPPING"` |
+| `sort_by` | string | No | `cost` | Sort: `"cost"`, `"conversions"`, `"roas"`, `"impressions"`, `"clicks"` |
+| `limit` | int | No | 50 | Max results (max 100) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 12, "returned": 12 },
+  "currency": "TRY",
+  "items": [
+    {
+      "id": "123456789",
+      "name": "Brand - Search",
+      "type": "SEARCH",
+      "status": "ENABLED",
+      "budget_amount": 500.0,
+      "impressions": 25000,
+      "clicks": 3500,
+      "cost": 1200.50,
+      "ctr": 14.0,
+      "cpc": 0.34,
+      "conversions": 180,
+      "conversion_value": 9500.0,
+      "conversion_rate": 5.14,
+      "cpa": 6.67,
+      "roas": 7.91
+    }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Show me my best-performing campaigns sorted by ROAS"
+
+---
+
+## gads_get_daily_metrics
+
+Get daily Google Ads metrics — impressions, clicks, cost, conversions as a time series.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `campaign_id` | string | No | All | Specific campaign ID, or empty for all campaigns |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 30, "returned": 30 },
+  "currency": "TRY",
+  "items": [
+    {
+      "date": "2026-06-01",
+      "impressions": 850,
+      "clicks": 120,
+      "cost": 42.50,
+      "conversions": 6,
+      "conversion_value": 320.0,
+      "ctr": 14.1,
+      "cpc": 0.35,
+      "roas": 7.53,
+      "cpa": 7.08
+    }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Show me daily ad spend trends for the last 30 days"
+
+---
+
+## gads_get_geo
+
+Get Google Ads performance by country/geographic location.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `campaign_id` | string | No | All | Specific campaign ID, or empty for all |
+| `limit` | int | No | 20 | Max results (max 100) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 8, "returned": 8 },
+  "currency": "TRY",
+  "items": [
+    {
+      "country_name": "Turkey",
+      "country_code": "TR",
+      "impressions": 20000,
+      "clicks": 2800,
+      "cost": 950.0,
+      "conversions": 150,
+      "conversion_value": 8000.0,
+      "ctr": 14.0,
+      "cpc": 0.34,
+      "conversion_rate": 5.36,
+      "roas": 8.42,
+      "cpa": 6.33
+    }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Which countries perform best in my Google Ads?"
+
+---
+
+## gads_get_devices
+
+Get Google Ads performance by device type (mobile, desktop, tablet).
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `campaign_id` | string | No | All | Specific campaign ID, or empty for all |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 3, "returned": 3 },
+  "currency": "TRY",
+  "items": [
+    {
+      "device": "MOBILE",
+      "impressions": 15000,
+      "clicks": 2100,
+      "cost": 700.0,
+      "conversions": 90,
+      "conversion_value": 4500.0,
+      "ctr": 14.0,
+      "cpc": 0.33,
+      "conversion_rate": 4.29,
+      "roas": 6.43,
+      "cpa": 7.78
+    }
+  ]
+}
+```
+
+<Tip>
+  Compare CPA and ROAS across devices to optimize bid adjustments. If mobile CPA is much higher, consider reducing mobile bids.
+</Tip>
+
+**Example Prompt:**
+
+> "How do mobile ads perform compared to desktop?"
+
+---
+
+## gads_get_search_terms
+
+Get actual search terms that triggered your Google Ads (Search campaigns only).
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `campaign_id` | string | No | All Search | Specific Search campaign ID, or empty for all |
+| `limit` | int | No | 50 | Max results (max 100) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 250, "returned": 50 },
+  "currency": "TRY",
+  "items": [
+    {
+      "search_term": "seo aracı",
+      "status": "ADDED",
+      "impressions": 500,
+      "clicks": 75,
+      "cost": 25.0,
+      "conversions": 4,
+      "conversion_value": 200.0,
+      "ctr": 15.0,
+      "cpc": 0.33,
+      "conversion_rate": 5.33,
+      "roas": 8.0,
+      "cpa": 6.25
+    }
+  ]
+}
+```
+
+<Warning>
+  Only available for **Search campaigns** — not Performance Max, Display, or Video campaigns.
+</Warning>
+
+<Tip>
+  Look for high-cost, zero-conversion terms and add them as negative keywords. Compare with organic keywords (`get_keywords`) to find paid/organic overlap.
+</Tip>
+
+**Example Prompt:**
+
+> "What search terms are triggering my ads? Find any wasted spend"

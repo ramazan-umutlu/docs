@@ -1,0 +1,169 @@
+---
+title: "Google Search Console — Data"
+description: "Fetch keyword, page, and performance data from Google Search Console"
+icon: "chart-line"
+---
+
+## Overview
+
+3 tools for fetching raw Google Search Console data — keywords, pages, and daily performance.
+
+<Note>
+  Google Search Console data has a **2-day delay**. Always use `today - 2 days` as the most recent `end_date`.
+</Note>
+
+---
+
+## get_keywords
+
+Get top keywords (search queries) ranked by clicks from Google Search Console.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `country` | string | No | All | ISO 3166-1 alpha-3 country code (e.g. `"tur"`, `"usa"`, `"deu"`) |
+| `device` | string | No | All | `"desktop"`, `"mobile"`, or `"tablet"` |
+| `page` | string | No | All | Filter by page URL (contains match, e.g. `"/blog/"`) |
+| `limit` | int | No | 100 | Max results (max 500) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 1250, "returned": 100, "truncated": true },
+  "items": [
+    {
+      "key": "best seo tools",
+      "overall_clicks": 450,
+      "overall_impressions": 12000,
+      "average_overall_position": 3.2,
+      "average_overall_ctr": 0.0375,
+      "clicks_growth_rate": 15.5,
+      "impressions_growth_rate": 8.2,
+      "position_growth_rate": -0.5
+    }
+  ]
+}
+```
+
+<Tip>
+  Growth rates compare the first half vs. second half of the date range. Negative `position_growth_rate` means positions improved (lower number = better).
+</Tip>
+
+**Example Prompts:**
+
+> "Show me my top 20 keywords by clicks for the last 30 days"
+
+> "Which keywords drive traffic to my blog pages?"
+
+---
+
+## get_pages
+
+Get top pages (URLs) ranked by clicks from Google Search Console.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `country` | string | No | All | ISO 3166-1 alpha-3 country code |
+| `device` | string | No | All | `"desktop"`, `"mobile"`, or `"tablet"` |
+| `query` | string | No | All | Filter pages by keyword (contains match, e.g. `"seo"`) |
+| `limit` | int | No | 100 | Max results (max 500) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 350, "returned": 100, "truncated": true },
+  "items": [
+    {
+      "key": "https://example.com/blog/seo-guide",
+      "overall_clicks": 1200,
+      "overall_impressions": 45000,
+      "average_overall_position": 4.1,
+      "average_overall_ctr": 0.0267,
+      "clicks_growth_rate": 22.3,
+      "impressions_growth_rate": 18.1,
+      "position_growth_rate": -1.2
+    }
+  ]
+}
+```
+
+**Example Prompts:**
+
+> "Show me my top 10 pages by clicks"
+
+> "Which pages rank for SEO-related keywords?"
+
+---
+
+## get_performance
+
+Get daily performance overview — clicks, impressions, CTR, and position as a time series with summary.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `country` | string | No | All | ISO 3166-1 alpha-3 country code |
+| `device` | string | No | All | `"desktop"`, `"mobile"`, or `"tablet"` |
+
+**Response:**
+
+```json
+{
+  "data": [
+    {
+      "keys": ["2026-06-01"],
+      "clicks": 150,
+      "impressions": 5000,
+      "ctr": 0.03,
+      "position": 12.5
+    }
+  ],
+  "summary": {
+    "before": {
+      "total_clicks": 2100,
+      "total_impressions": 75000,
+      "average_ctr": 0.028,
+      "average_position": 13.2,
+      "days": 15
+    },
+    "after": {
+      "total_clicks": 2500,
+      "total_impressions": 82000,
+      "average_ctr": 0.030,
+      "average_position": 12.1,
+      "days": 15
+    },
+    "growth": {
+      "clicks_growth": 19.0,
+      "impressions_growth": 9.3,
+      "position_growth": -1.1,
+      "ctr_growth": 7.1
+    }
+  }
+}
+```
+
+<Tip>
+  The summary automatically splits the date range in half and compares before/after. Positive `position_growth` means positions got worse (higher number).
+</Tip>
+
+**Example Prompts:**
+
+> "How is my site doing in Google Search this month?"
+
+> "Show me daily search traffic for the last 30 days"

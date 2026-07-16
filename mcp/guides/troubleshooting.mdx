@@ -1,0 +1,142 @@
+---
+title: "Troubleshooting"
+description: "Common issues and solutions for the Semust MCP Server"
+icon: "bug"
+---
+
+## Server Won't Start
+
+### Python Version
+
+The MCP server requires Python 3.10+. Check your version:
+
+```bash
+python --version
+```
+
+If you have an older version, download Python 3.10+ from [python.org](https://www.python.org/downloads/).
+
+### Missing Dependencies
+
+Install all required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+### API Key Not Set
+
+If you see `SEMUST_API_KEY environment variable is required`, ensure your API key is configured:
+
+- In `.env` file: `SEMUST_API_KEY=your_key_here`
+- Or in your AI client configuration (see [Setup Guides](/mcp/setup/claude-desktop))
+
+---
+
+## Claude Desktop Issues
+
+### Tools Don't Appear
+
+1. Verify the path to `semust_mcp.py` is correct in `claude_desktop_config.json`
+2. Use double backslashes on Windows: `C:\\Users\\...\\semust_mcp.py`
+3. **Fully quit** Claude Desktop (not just close the window) and reopen it
+4. Check that the JSON syntax is valid — a missing comma or bracket will break it
+
+### Config File Location
+
+<CodeGroup>
+
+```text Windows
+%APPDATA%\Claude\claude_desktop_config.json
+```
+
+```text macOS
+~/Library/Application Support/Claude/claude_desktop_config.json
+```
+
+</CodeGroup>
+
+### Python Not Found
+
+If Claude Desktop can't find Python, use the full path:
+
+```json
+{
+  "command": "C:\\Python310\\python.exe",
+  "args": ["C:\\path\\to\\semust_mcp.py"]
+}
+```
+
+Find your Python path:
+
+```bash
+python -c "import sys; print(sys.executable)"
+```
+
+---
+
+## API Errors
+
+### Invalid API Key
+
+```
+Authentication failed — invalid API key
+```
+
+- Verify your key at [app.semust.com/api/access](https://app.semust.com/api/access)
+- Check for trailing whitespace or line breaks in the key
+- Ensure the key matches exactly (copy-paste, don't type manually)
+
+### Integration Not Connected
+
+| Error | Solution |
+|-------|----------|
+| `search_console_not_connected` | Connect Google Search Console in Semust > Project Settings > Integrations |
+| `google_analytics_not_connected` | Connect Google Analytics 4 in Semust > Project Settings > Integrations |
+| `google_ads_not_connected` | Connect Google Ads in Semust > Project Settings > Integrations |
+| `yandex_metrica_not_connected` | Connect Yandex Metrica in Semust > Project Settings > Integrations |
+| `bing_webmaster_not_connected` | Connect Bing Webmaster in Semust > Project Settings > Integrations |
+
+### Subscription Issues
+
+| Error | Solution |
+|-------|----------|
+| `user_not_active` | Your subscription is inactive. Visit [semust.com/en/pricing](https://semust.com/en/pricing) to subscribe |
+| `project_access_denied` | You don't have access to this project. Run `list_projects` to see available projects |
+| `rate_limit_exceeded` | Too many requests. Wait a minute and try again |
+
+---
+
+## Empty Data
+
+### No Results Returned
+
+- **Check integration status:** Run `list_projects` and verify the integration is `"completed"`
+- **Check date range:** Ensure dates are in `YYYY-MM-DD` format
+- **Search Console delay:** Data has a 2-day delay — don't use today or yesterday as `end_date`
+- **Analytics delay:** GA data has a ~1-day delay
+- **Verify project_id:** Use the exact `project_id` from `list_projects`
+
+### No Rank Tracking Data
+
+- Add keywords in Semust > Rank Tracker to start tracking
+- Ranking data takes 24 hours to appear after adding keywords
+
+### No AI Rank Tracking Data
+
+- Add keywords in Semust > AI Rank Tracker
+- AI Overview data takes 24-48 hours to appear
+
+### No Indexing Data
+
+- Set up monitoring in Semust > Search Console > Indexing Monitor
+- Initial crawl may take several hours
+
+---
+
+## Getting Help
+
+If you're still having issues:
+
+- **Email:** [destek@semust.com](mailto:destek@semust.com)
+- **Dashboard:** [app.semust.com](https://app.semust.com)

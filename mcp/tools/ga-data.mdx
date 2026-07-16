@@ -1,0 +1,232 @@
+---
+title: "Google Analytics — Data"
+description: "Fetch traffic, source, page, geo, device, and event data from Google Analytics"
+icon: "chart-bar"
+---
+
+## Overview
+
+6 tools for fetching Google Analytics data — traffic overview, sources, pages, geography, devices, and key events.
+
+<Note>
+  Google Analytics data has a **1-day delay**. Use `today - 1 day` as the most recent `end_date`.
+</Note>
+
+---
+
+## ga_get_overview
+
+Get Google Analytics overview — core metrics for the site.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `compare_with_previous` | bool | No | `false` | Include previous period comparison |
+
+**Response:**
+
+```json
+{
+  "metrics": {
+    "total_users": 15000,
+    "new_users": 12000,
+    "sessions": 22000,
+    "screen_page_views": 45000,
+    "engaged_sessions": 16000,
+    "average_session_duration": 125.5,
+    "bounce_rate": 42.3,
+    "engagement_rate": 72.7,
+    "sessions_per_user": 1.47,
+    "events_per_session": 4.2
+  },
+  "period": { "start": "2026-06-01", "end": "2026-06-30" },
+  "realtime": { "active_users": 42 }
+}
+```
+
+With `compare_with_previous=true`, also returns `comparison` with percentage changes and `previous_period` dates.
+
+**Example Prompts:**
+
+> "How is my traffic this month?"
+
+> "Compare this month's analytics to last month"
+
+---
+
+## ga_get_traffic_sources
+
+Get traffic source breakdown from Google Analytics.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `dimension` | string | No | `channel` | Group by: `"channel"`, `"source"`, `"medium"`, `"campaign"`, `"referrer"` |
+| `limit` | int | No | 20 | Max results (max 100) |
+
+**Dimension values:**
+- `channel` — High-level: Organic Search, Direct, Paid Search, Social, Referral, Email
+- `source` — Specific: google, facebook, twitter, direct
+- `medium` — Traffic type: organic, cpc, referral, email
+- `campaign` — UTM campaign names
+- `referrer` — Referring domains
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 8, "returned": 8, "dimension": "channel" },
+  "items": [
+    { "name": "Organic Search", "sessions": 12000, "users": 9500, "percentage": 54.5 }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Where does my traffic come from?"
+
+---
+
+## ga_get_pages
+
+Get page performance data from Google Analytics.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `type` | string | No | `top` | Page type: `"top"`, `"entry"`, `"exit"` |
+| `limit` | int | No | 20 | Max results (max 100) |
+
+**Type values:**
+- `top` — Pages by total pageviews
+- `entry` — Landing pages (first page visitors see)
+- `exit` — Last pages visitors see before leaving
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 150, "returned": 20, "type": "top" },
+  "items": [
+    { "path": "/blog/seo-guide", "title": "Complete SEO Guide", "views": 5200, "percentage": 11.5 }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Show me my top landing pages"
+
+---
+
+## ga_get_geo
+
+Get geographic breakdown of visitors from Google Analytics.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `dimension` | string | No | `country` | Geographic level: `"country"`, `"region"`, `"city"` |
+| `limit` | int | No | 20 | Max results (max 100) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 45, "returned": 20, "dimension": "country" },
+  "items": [
+    { "name": "Turkey", "users": 8500, "sessions": 12000, "percentage": 56.7 }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "Where are my visitors from?"
+
+---
+
+## ga_get_devices
+
+Get device, browser, or OS breakdown from Google Analytics.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `dimension` | string | No | `category` | Group by: `"category"`, `"browser"`, `"os"` |
+| `limit` | int | No | 20 | Max results (max 100) |
+
+**Dimension values:**
+- `category` — Desktop, Mobile, Tablet
+- `browser` — Chrome, Safari, Firefox, Edge, etc.
+- `os` — Windows, macOS, iOS, Android, Linux, etc.
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 3, "returned": 3, "dimension": "category" },
+  "items": [
+    { "name": "Mobile", "users": 9000, "sessions": 13000, "percentage": 60.0 }
+  ]
+}
+```
+
+**Example Prompt:**
+
+> "What's the mobile vs desktop split?"
+
+---
+
+## ga_get_key_events
+
+Get key events (conversions) from Google Analytics.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `project_id` | string | Yes | — | Project ID from `list_projects` |
+| `start_date` | string | Yes | — | Start date (YYYY-MM-DD) |
+| `end_date` | string | Yes | — | End date (YYYY-MM-DD) |
+| `limit` | int | No | 20 | Max results (max 50) |
+
+**Response:**
+
+```json
+{
+  "_meta": { "total": 5, "returned": 5, "total_key_events": 1250 },
+  "items": [
+    { "event_name": "form_submit", "key_events": 800, "percentage": 64.0 }
+  ]
+}
+```
+
+<Tip>
+  Key events are GA4's replacement for goals/conversions. Common events: `form_submit`, `purchase`, `sign_up`, `generate_lead`, `add_to_cart`.
+</Tip>
+
+**Example Prompt:**
+
+> "How many conversions did I get this month?"

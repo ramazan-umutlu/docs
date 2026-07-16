@@ -1,0 +1,56 @@
+---
+title: "Projects"
+description: "List and manage your Semust projects"
+icon: "folder"
+---
+
+## Overview
+
+1 tool for listing your Semust projects and checking their integration status. **Always call this first** before using any other tool.
+
+---
+
+## list_projects
+
+List all Semust projects with their integration status.
+
+**Parameters:** None
+
+**Response:**
+
+```json
+{
+  "projects": [
+    {
+      "project_id": "abc123",
+      "project_name": "My Website",
+      "url": "https://example.com",
+      "role": "owner",
+      "integrations": {
+        "search_console": "completed",
+        "google_analytics": "completed",
+        "google_ads": "not_connected",
+        "meta_ads": "not_connected",
+        "bing_webmaster": "completed",
+        "yandex_metrica": "not_connected"
+      }
+    }
+  ]
+}
+```
+
+**Integration Status Values:**
+
+| Status | Meaning |
+|--------|---------|
+| `completed` | Integration is active — tools for this platform are available |
+| `pending` | Integration is in progress — wait for completion |
+| `not_connected` | Not set up — connect in Semust > Project Settings > Integrations |
+
+**Example Prompt:**
+
+> "Show me all my Semust projects and their integration status"
+
+<Warning>
+  Only use platform-specific tools on projects where the corresponding integration is `"completed"`. For example, only use `get_keywords` if `search_console` is `"completed"`.
+</Warning>
